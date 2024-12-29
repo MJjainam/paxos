@@ -1,4 +1,4 @@
-# paxos
+# Paxos
 Paxos is a bedrock algorithm in distributed systems. This repo attempts to simulate Paxos in Go.
 
 ## Points ensured when writing the code
