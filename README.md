@@ -1,4 +1,4 @@
-# Paxos
+# Paxos (Ongoing)
 Paxos is a bedrock algorithm in distributed systems. This project attempts to simulate Paxos in Go.
 
 ## Broad Points ensured when writing the code
@@ -6,6 +6,8 @@ Paxos is a bedrock algorithm in distributed systems. This project attempts to si
 2. Well documented.
 3. Highly configurable that allows simulation of failures, adding network delays, etc.
 4. Metrics and Observability.
+
+
 
 ## Glossary
 | Term          | Definition                                                                 |
@@ -21,7 +23,7 @@ Paxos is a bedrock algorithm in distributed systems. This project attempts to si
 
 ## Pseudo Code
 ### Happy Path 
-1. A random actor assumes the role of a proposer and initiates proposal request to all other actors. The proposer will choose itself as a proposer with the probability of 1/n. 
+1. A random actor assumes the role of a proposer and initiates proposal request to all other actors. The proposer will choose itself as a proposer with the probability of x (to be decided)
 2. The acceptors return with positive ack if what they have seen is the highest PRN until then. If the PRN is lower then it will return neg ack.
 3. If any of the acceptor returns a negative ack, then the proposer relinquishes the proposer role. Otherwise the proposer proposes a value to the actors that have accepted the proposals. 
 4. The acceptors return with positive ack if the value is accepted. The acceptors sends this ack to all the actors. 
