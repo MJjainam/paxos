@@ -1,5 +1,5 @@
 # Paxos (Ongoing)
-Paxos is a bedrock algorithm in distributed systems. This project attempts to simulate Paxos in Go.
+Paxos is a bedrock algorithm in distributed systems. This project attempts to simulate Leader Election using Paxos in Go.
 
 ## Broad Points ensured when writing the code
 1. The code must be easy to understand. 
@@ -37,4 +37,8 @@ Paxos is a bedrock algorithm in distributed systems. This project attempts to si
 
 ## References
 1. Paxos Simplified: https://www.youtube.com/watch?v=SRsK-ZXTeZ0
-2. 
+2. https://github.com/kkdai/paxos
+
+
+## Contact
+This project is currently under progress. If you are interested in knowing about it and collaborating, then you can reach out to me @MJjainam on Telegram 
