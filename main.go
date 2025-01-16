@@ -7,7 +7,7 @@ const TOTAL_ACTORS int = 5
 func main() {
 	fmt.Println("Good to have you back, Go!")
 
-	network := newNetwork(5)
+	network := newNetwork(TOTAL_ACTORS)
 
 	/* Initialize actors */
 	var Actors [TOTAL_ACTORS + 1]Actor
