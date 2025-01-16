@@ -5,44 +5,10 @@ import (
 	"time"
 )
 
-const InactivityTimePeriod time.Duration = 2
+const InactivityTimePeriod time.Duration = 2 * time.Second
 
 /*
-The actors will have four stages.
-1. PINIT stage:
-Proposer Initialization phase. In this phase the actor will asume the role of a proposer and send initiation message.
-If all the remaining actors send back positive PInitResp message, then the actor is moved to PVal stage
-2. PVAL stage:
-In PVal stage the actor will send the message to all the actors (in parallel) and expect back a acceptance message. If the number of acceptances message is > majority, then it moves to the FINISH stage.
-3. ACCEPT stage
-Acceptors stage. This can move to PINIT stage if it crosses the inactivity period
-4. FINISH stage. Done.
-
-Based on what stage the actor is in, appropriate message will be responded.
-1. PINIT stage
-	a. PInit message (This will be rejected, PInitRespMessage with false success will be responded)
-	b. PInitResp message (Expected. Move forward)
-	c. PVal message (This is invalid. Respond with Negative PValResp)
-	d. PValResp message (This is received when some other actor has accepted the PRN.
-		Increment the counter for the PRN. And if the value surpasses majority, assume that as the leader. Move to FINISH stage)
-
-2. PVAL stage
-	a. PInit message (This will be rejected by responding with false success)
-	b. PInitResp message (This is invalid, as PVAL stage is reached only after accepting all the PInitResp message)
-	c. PVal message (Someone else is sending proposal value, reject this)
-	d. PValResp message (Same as 1.d )
-
-3. ACCEPT stage
-	a. PInit message (This can be accepted or rejected based on the value inside PInit message. If the cycle is lesser than or equal to the last seen cycle then reject it. Or accpet it)
-	b. PInitResp message (This is invalid)
-	c. PVal message (If the PVal's PRN is whatever is stored in last PRN, then accept. Otherwise reject. Upon accepting this broadcase the PValResp message to all actors)
-	d. PValResp message (Same as 1.d)
-
-4. FINISH stage
-	a. PInit message. Invalid, reject
-	b. PInitResp message. Invalid, reject
-	c. PVal message. Invalid, reject
-	d. PValResp message. Valid, increment.
+The actors will have four stages. Refer stage.go
 */
 
 type Actor struct {
@@ -55,7 +21,10 @@ type Actor struct {
 		The previous cycle's
 
 	*/
-	Data map[string]interface{}
+	Stage
+	LatestPRN   PRN
+	PValRespMap map[PRN]int //PRN to Count
+	// Data      map[string]interface{}
 }
 
 func (a Actor) getRecvChan() chan Message {
@@ -70,12 +39,12 @@ func (a Actor) Run() {
 	//Run a continuous for loop
 	for {
 		//All actors will accept message via their from channels
-		timer := time.NewTimer(InactivityTimePeriod * time.Second)
+		timer := time.NewTimer(InactivityTimePeriod)
 	loop:
 		for {
 			select {
 			case msg := <-messageChan:
-				timer.Reset(InactivityTimePeriod * time.Second)
+				timer.Reset(InactivityTimePeriod)
 				a.ProcessMessage(msg)
 
 			case <-timer.C:

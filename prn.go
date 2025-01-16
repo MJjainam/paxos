@@ -11,6 +11,24 @@ This file stores functions and struct related to proposal request number (PRN)
 
 type PRN string
 
+func (base PRN) GreaterThan(in PRN) bool {
+	baseCycle, baseActorNumber := base.Parse()
+	inCycle, inActorNumber := in.Parse()
+
+	if baseCycle > inCycle {
+		return true
+	} else if baseCycle < inCycle {
+		return false
+	} else {
+		if baseActorNumber > inActorNumber {
+			return true
+		} else {
+			return false
+		}
+	}
+
+}
+
 func (p PRN) Parse() (int, int) {
 
 	parts := strings.Split(string(p), ".")
